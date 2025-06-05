@@ -1,12 +1,20 @@
 package com.stefanbratanov.sofiasupermarketsapi.model
 
-import java.util.*
-import org.springframework.data.annotation.Id
-import org.springframework.data.keyvalue.annotation.KeySpace
+import jakarta.persistence.*
 
-@KeySpace("ProductStore")
+@Entity
+@Table(name = "product_store")
 data class ProductStore(
-  @Id val supermarket: String,
-  val updatedAt: Date? = Date(),
-  val products: List<Product>? = emptyList(),
+        @Id
+        @Column(name = "id", nullable = false)
+        val id: String,                  // ← this must be provided
+        @Column(name = "supermarket", nullable = false)
+        val supermarket: String,
+        @ElementCollection(fetch = FetchType.EAGER)
+        @CollectionTable(
+                name = "product_store_products",
+                joinColumns = [JoinColumn(name = "product_store_id")]
+        )
+        @Column(name = "product")
+        val products: List<Product> = emptyList()
 )

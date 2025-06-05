@@ -54,7 +54,7 @@ cloudinary:
 spring:
   application.name: sofia-supermarkets-api
   jpa:
-    hibernate.ddl-auto: none
+    hibernate.ddl-auto: update
   datasource:
     hikari:
       maximum-pool-size: 2

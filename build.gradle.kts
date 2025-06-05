@@ -39,7 +39,8 @@ dependencies {
   implementation("org.springframework.data:spring-data-keyvalue")
   implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   implementation("org.springframework.boot:spring-boot-starter-cache")
-  implementation("org.springframework.boot:spring-boot-starter-validation")
+  implementation("org.springframework.boot:spring-boot-starter-validation")// https://mvnrepository.com/artifact/jakarta.persistence/jakarta.persistence-api
+  implementation("jakarta.persistence:jakarta.persistence-api:3.1.0")
   implementation("org.postgresql:postgresql:42.7.6")                        // :contentReference[oaicite:7]{index=7}
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.8") // :contentReference[oaicite:8]{index=8}
   implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.0")

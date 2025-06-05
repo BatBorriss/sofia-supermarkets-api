@@ -12,12 +12,14 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
+import java.util.UUID
+
 @Log
 @Component
 class KauflandFlow(
-  @Value("\${kaufland.base.url}") private val baseUrl: URL,
-  @Qualifier("Kaufland") val urlProductsExtractor: UrlProductsExtractor,
-  val productStoreRepository: ProductStoreRepository,
+        @Value("\${kaufland.base.url}") private val baseUrl: URL,
+        @Qualifier("Kaufland") val urlProductsExtractor: UrlProductsExtractor,
+        val productStoreRepository: ProductStoreRepository,
 ) : SupermarketFlow {
 
   override fun run() {
@@ -27,7 +29,15 @@ class KauflandFlow(
     log.info("Retrieved ${products.size} products")
     log.info("Saving ${getSupermarket().title} products")
 
-    val toSave = ProductStore(supermarket = getSupermarket().title, products = products)
+    // generate a random UUID for id
+    val generatedId = UUID.randomUUID().toString()
+
+    val toSave = ProductStore(
+            id = generatedId,                      // ← supply the new UUID here
+            supermarket = getSupermarket().title,
+            products = products
+    )
+
     productStoreRepository.saveIfProductsNotEmpty(toSave)
   }
 

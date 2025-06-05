@@ -11,21 +11,32 @@ import com.stefanbratanov.sofiasupermarketsapi.repository.ProductStoreRepository
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 
+import java.util.UUID
+
 @Log
 @Component
 class LidlFlow(
-  val lidlSublinksScraper: LidlSublinksScraper,
-  @Qualifier("Lidl") val urlProductsExtractor: UrlProductsExtractor,
-  val productStoreRepository: ProductStoreRepository,
+        val lidlSublinksScraper: LidlSublinksScraper,
+        @Qualifier("Lidl") val urlProductsExtractor: UrlProductsExtractor,
+        val productStoreRepository: ProductStoreRepository,
 ) : SupermarketFlow {
 
   override fun run() {
-    val products = lidlSublinksScraper.getSublinks().flatMap { urlProductsExtractor.extract(it) }
+    val products = lidlSublinksScraper.getSublinks()
+            .flatMap { urlProductsExtractor.extract(it) }
 
     log.info("Retrieved ${products.size} products")
     log.info("Saving ${getSupermarket().title} products")
 
-    val toSave = ProductStore(supermarket = getSupermarket().title, products = products)
+    // generate a random UUID for id
+    val generatedId = UUID.randomUUID().toString()
+
+    val toSave = ProductStore(
+            id = generatedId,                       // ← supply the UUID here
+            supermarket = getSupermarket().title,
+            products = products
+    )
+
     productStoreRepository.saveIfProductsNotEmpty(toSave)
   }
 
@@ -33,3 +44,4 @@ class LidlFlow(
     return Supermarket.LIDL
   }
 }
+

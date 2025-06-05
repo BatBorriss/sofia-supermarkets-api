@@ -15,7 +15,7 @@ class ProductStoreController(val productStoreRepository: ProductStoreRepository)
 
   @Operation(summary = "Get all products from supermarkets")
   @GetMapping("/products")
-  fun products(productCriteria: ProductCriteria): List<ProductStore> {
+  fun products(productCriteria: ProductCriteria): List<Any> {
     val productStores =
       if (productCriteria.supermarket.isNullOrEmpty()) {
         productStoreRepository.findAll().toList()
@@ -30,7 +30,9 @@ class ProductStoreController(val productStoreRepository: ProductStoreRepository)
     if (productCriteria.offers) {
       return productStores.map {
         val offerProducts = it.products?.filter { product -> checkOfferPrice(product) }
-        it.copy(products = offerProducts)
+        if (offerProducts != null) {
+          it.copy(products = offerProducts)
+        }
       }
     }
     return productStores
