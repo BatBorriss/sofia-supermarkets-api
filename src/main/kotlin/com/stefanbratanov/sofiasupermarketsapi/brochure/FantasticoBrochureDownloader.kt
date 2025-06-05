@@ -7,7 +7,6 @@ import com.stefanbratanov.sofiasupermarketsapi.common.getHtmlDocument
 import com.stefanbratanov.sofiasupermarketsapi.common.getNameMinusThePath
 import com.stefanbratanov.sofiasupermarketsapi.interfaces.BrochureDownloader
 import com.stefanbratanov.sofiasupermarketsapi.interfaces.BrochureDownloader.Brochure
-import io.github.bonigarcia.wdm.WebDriverManager
 import java.net.URL
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets.UTF_8
@@ -20,7 +19,6 @@ import kotlin.text.RegexOption.IGNORE_CASE
 import org.openqa.selenium.By
 import org.openqa.selenium.Dimension
 import org.openqa.selenium.phantomjs.PhantomJSDriver
-import org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT
 import org.openqa.selenium.remote.DesiredCapabilities
 import org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable
 import org.openqa.selenium.support.ui.WebDriverWait
@@ -36,9 +34,13 @@ class FantasticoBrochureDownloader(@Value("\${fantastico.url}") private val url:
     var capabilities: DesiredCapabilities
 
     init {
-      WebDriverManager.phantomjs().setup()
+        System.setProperty(
+                "phantomjs.binary.path",
+                "/usr/local/bin/phantomjs"
+        )
+//      WebDriverManager.phantomjs().setup()
       capabilities = DesiredCapabilities()
-      capabilities.setCapability(SUPPORTS_JAVASCRIPT, true)
+//      capabilities.setCapability(SUPPORTS_JAVASCRIPT, true)
     }
   }
 
@@ -89,20 +91,22 @@ class FantasticoBrochureDownloader(@Value("\${fantastico.url}") private val url:
                 ?.attr("href")!!
             }
 
-          val filenameMinusPath = getNameMinusThePath(downloadHref)
+          val filenameMinusPath = downloadHref?.let { it1 -> getNameMinusThePath(it1) }
           val encodedHref =
-            downloadHref.replace(
-              filenameMinusPath,
-              URLEncoder.encode(filenameMinusPath, UTF_8.name()),
-            )
+                  filenameMinusPath?.let { it1 ->
+                      downloadHref.replace(
+                              it1,
+                              URLEncoder.encode(filenameMinusPath, UTF_8.name()),
+                      )
+                  }
           val downloadUrl = URL(encodedHref)
 
           val tempDirectory = Files.createTempDirectory("brochures-download")
           val filename =
-            filenameMinusPath.let { fn ->
-              val unixTime = System.currentTimeMillis()
-              if (fn.contains(".")) "${unixTime}_$fn" else "${unixTime}_$fn.pdf"
-            }
+                  filenameMinusPath?.let { fn ->
+                      val unixTime = System.currentTimeMillis()
+                      if (fn.contains(".")) "${unixTime}_$fn" else "${unixTime}_$fn.pdf"
+                  }
 
           val downloadPath = tempDirectory.resolve(filename)
           val downloadedBytes = copyURLToFile(downloadUrl, downloadPath)

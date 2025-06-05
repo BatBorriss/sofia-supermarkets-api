@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  brochuresDb:
+    image: postgres:15.4-alpine
+    container_name: brochures-db
+    restart: unless-stopped
+    ports:
+      - "5471:5432"
+    volumes:
+      - brochures-db:/var/lib/postgresql
+      - "$PWD/initScript/dbInit.sql:/docker-entrypoint-initdb.d/dbInit.sql"
+    environment:
+      - POSTGRES_DB=brochures_db
+      - POSTGRES_USER=brochures
+      - POSTGRES_PASSWORD=password
+
+volumes:
+  brochures-db:
+    driver: local

@@ -154,7 +154,6 @@ class AlcoholController(
             ?.distinctBy { pr -> pr.copy(validFrom = null, validUntil = null, picUrl = null) }
         it.copy(products = filteredAndDistinctProducts)
       }
-      .map { addPics(it, useCdn) }
   }
 
   private fun processTMarketProducts(productStore: ProductStore): ProductStore {

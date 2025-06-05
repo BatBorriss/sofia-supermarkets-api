@@ -43,13 +43,13 @@ google:
   image.search:
     url: https://www.google.bg/search?source=lnms&tbm=isch
   custom.search:
-    url: https://www.googleapis.com/customsearch/v1?key=${GOOGLE_API_KEY:}&cx=0b1305ac3733516ec&searchType=image
+    url: https://www.googleapis.com/customsearch/v1?key=AIzaSyCFhQUZcq9m-WfDhTmXIbJwZ2nkzT5zwTI&cx=0b1305ac3733516ec&searchType=image
 
 cloudinary:
-  cloud.name: dhf90uh66
+  cloud.name: dvhremyag
   api:
-    key: 131315184557651
-    secret: ${CLOUDINARY_API_SECRET:}
+    key: 692784477265895
+    secret: _w1wW_guBtn64JGpY6qA7thz864
 
 spring:
   application.name: sofia-supermarkets-api
@@ -58,9 +58,10 @@ spring:
   datasource:
     hikari:
       maximum-pool-size: 2
-    url: ${DB_URL:}
-    username: ${DB_USERNAME:}
-    password: ${DB_PASSWORD:}
+    url: jdbc:postgresql://localhost:5471/brochures_db
+    username: brochures
+    password: password
+    driver-class-name: org.postgresql.Driver
   jackson:
     serialization:
       write-dates-as-timestamps: false

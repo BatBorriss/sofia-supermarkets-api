@@ -14,6 +14,7 @@ interface ProductStoreRepository : KeyValueRepository<ProductStore, String> {
   fun saveIfProductsNotEmpty(entity: ProductStore): ProductStore {
     val toSave = entity.takeUnless { it.products.isNullOrEmpty() }
     if (isNull(toSave)) {
+      log
       log.warn("Products are empty for {}. Will not save.", entity.supermarket)
       return entity
     }
